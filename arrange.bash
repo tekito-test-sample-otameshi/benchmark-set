@@ -135,6 +135,8 @@ then
 	exit 1
 fi
 
+echo "Now, choose the term you want to get the cpu benchmark result with the form of XXXX/XX/XX ~ YYYY/YY/YY"
+
 BEG_DAY
 
 while [ "$rep" = "no" ] || [ "$rep" = "n" ]
