@@ -29,26 +29,18 @@ MV_FILE () {
 	fi
 
 	form_trg=`find . -maxdepth 1 -name "*.$form"`
-	ret=`$?`
-
-	if [ $ret -ne 0 ]
-	then
-		msg="any errors happend"
-		ERR_LOG
-		exit 1
-	fi
 
 	if [ ! -d "${cpu_dir}/${form}" ]
 	then
 		mkdir "$cpu_dir"/${form}
 	fi
 
-	if [ -n $form_trg ]
+	if [ -n "$form_trg" ]
 	then
 		mv $form_trg ${form}/
-		form_trg=`find . -name "*".$form`
+		form_trg=`find . -maxdepth 1 -name "*.$form"`
 
-		if [ -n $form_trg ]
+		if [ -n "$form_trg" ]
 		then
 			msg="Counnot move '*.${form}' files to '${form}/' directory. Escaping from this script..."
 			ERR_LOG

@@ -20,43 +20,6 @@ ERR_LOG () {
 	echo ""$DATE" [ERROR]: "$msg"" >> $log_file
 	}
 
-MV_FILE () {
-	if [ -z "$form" ]
-	then
-		msg="No value in 'form'. Esccaping from this scriopt... "
-		ERR_LOG
-		exit 1
-	fi
-
-	form_trg=`find . -name "*".$form`
-	ret=`$?`
-
-	if [ $ret -ne 0 ]
-	then
-		msg="any errors happend"
-		ERR_LOG
-		exit 1
-	fi
-
-	if [ ! -d "${cpu_dir}/${form}" ]
-	then
-		mkdir "$cpu_dir"/${form}
-	fi
-
-	if [ -n $form_trg ]
-	then
-		mv $form_trg ${form}/
-		form_trg=`find . -name "*".$form`
-
-		if [ -n $form_trg ]
-		then
-			msg="Counnot move '*.${form}' files to '${form}/' directory. Escaping from this script..."
-			ERR_LOG
-			exit 1
-		fi
-	fi
-}
-
 BEG_DAY () {
 	echo "Enter the beggining of term you want to get results."
 	read -p "Year (format XXXX) -->  " beg_year_ans
@@ -135,7 +98,7 @@ then
 	exit 1
 fi
 
-echo "Now, choose the term you want to get the cpu benchmark result with the form of XXXX/XX/XX ~ YYYY/YY/YY"
+echo "Now, choose the term you want to get the ssd benchmark result with the form of XXXX/XX/XX ~ YYYY/YY/YY"
 
 BEG_DAY
 
@@ -153,169 +116,26 @@ do
 	END_DAY
 done
 
-echo "Getting the cpu results from ${beg_year_ans}/${beg_mon_ans}/${beg_day_ans}" to ${end_year_ans}/${end_mon_ans}/${end_day_ans} | tee $log_file
+echo "Getting the ssd results from ${beg_year_ans}/${beg_mon_ans}/${beg_day_ans}" to ${end_year_ans}/${end_mon_ans}/${end_day_ans} | tee $log_file
 
-#cpu
+#ssd
+ssd_dir="/home/benchmark/fio/results"
 
-if [ "$hostname" = "sakura-1co2gb-tky" ] || [ "$hostname" = "sakura-1co1gb-isk" ]  || [ "$hostname" = "aws-a1medium-va" ]
-then
-	cpu_dir="/home/benchmark/unixbench/byte-unixbench/UnixBench/results"
-else
-	cpu_dir="/home/benchmark/byte-unixbench/UnixBench/results"
-fi
-
-cd $cpu_dir 2>> $log_file
+cd $ssd_dir 2>> $log_file
 ret=`echo $?`
 
 if [ $ret -ne 0 ]
 then
-	msg="No directory cpu benchmark results being put"
+	msg="Cannot change the directory to 'ssd_dir'"
 	ERR_LOG
 	exit 1
 fi
 
-cpu_file="${cpu_dir}/sum_res/sum_res_`date '+%Y%m%d%H%M'`.txt" 
+ssd_file="${ssd_dir}/sum_res/sum_res_`date '+%Y%m%d'`.txt"
 
-if [ ! -d ${cpu_file%/*} ]
+if [ ! -d ${ssd_dir%/*} ]
 then
-	mkdir ${cpu_file%/*}
+	mkdir ${ssd_dir%/*}
 fi
 
-echo "date,time,cpu-score" > $cpu_file
-
-form=log
-MV_FILE
-
-form=html
-MV_FILE
-
-startdate="${beg_year_ans}-${beg_mon_ans}-${beg_day_ans}"
-enddate="${end_year_ans}-${end_mon_ans}-${end_day_ans}"
-
-tmpdate="$startdate"
-while [ 1 ]
-do
-	target=`find *${tmpdate}*`
-	
-	# anticipates that $target has equal or more than 2 files.
-	echo "$target" | while read line
-	do
-		score=`grep "Score" $line | awk -F " " '{print $5}'`
-		
-		if [ -z $score ]
-		then
-			msg="Cannot get the cpu score of $line"
-			ERR_LOG
-		fi
-
-		cpu_time=`grep "Run" $line | awk -F " " '{print $7 $8 $9}'` 
-
-		echo "${tmpdate},${cpu_time},${score}" >> $cpu_file
-	done
-
-	if [ "$tmpdate" = "$enddate" ]
-	then
-		break
-	fi
-
-	tmpdate=`date -d "$tmpdate 1day" "+%Y-%m-%d"`
-done
-
-#memory
-mem_dir="/home/benchmark/STREAM/results"
-
-cd $mem_dir 2>> $log_file
-ret=`echo $?`
-
-if [ $ret -ne 0 ]
-then
-	msg="Cannot change the directory to 'mem_dir'"
-	ERR_LOG
-	exit 1
-fi
-
-mem_file="${mem_dir}/sum_res/sum_res_`date '+%Y%m%d'.txt`"
-
-if [ ! -d ${mem_file%/*} ]
-then
-	mkdir ${mem_file%/*}
-fi
-
-echo "date,time,copy-av,scale-av,add-av,triad-av" > $mem_file
-
-read -p "The set term is ${startdate}. Are you sure you will continue to get the result of this term? (yes/n) --->  " rep
-
-while [ "$rep" = "yes" ]
-do
-	echo "Now, choose the term again."
-	BEG_DAY
-done
-
-while [ "rep" = "yes" ]
-do
-	END_DAY
-done
-
-echo "Getting the memory results from ${beg_year_ans}/${beg_mon_ans}/${beg_day_ans}" to ${end_year_ans}/${end_mon_ans}/${end_day_ans} | tee $log_file
-
-startdate="${beg_year_ans}${beg_mon_ans}${beg_day_ans}"
-enddate="${end_year_ans}${end_mon_ans}${end_day_ans}"
-
-tmpdate="$startdate"
-while [ 1 ]
-do
-	target=`find *${tmpdate}*`
-	
-	# anticipates that $target has equal or more than 2 files.
-	echo "$target" | while read line
-	do
-		t="Copy"
-		MEM_FUN
-		copy_val="$val"
-		
-		t="Scale"
-		MEM_FUN
-		scale_val="$val"
-
-		t="Add"
-		MEM_FUN
-		add_val="$val"
-
-		t="Triad"
-		MEM_FUN
-		triad_val="$val"
-
-		mem_time=`date '+%Y-%d-%m %H:%M' -r "$line"`
-
-		echo "${mem_time},${copy_val},${scale_val},${add_val},${triad_val}" >> $mem_file
-	done
-
-	if [ "$tmpdate" = "$enddate" ]
-	then
-		break
-	fi
-
-	tmpdate=`date -d "$tmpdate 1day" "+%Y%m%d"`
-done
-
-##ssd
-#ssd_dir="/home/benchmark/fio/results"
-#
-#cd $ssd_dir 2>> $log_file
-#ret=`echo $?`
-#
-#if [ $ret -ne 0 ]
-#then
-#	msg="Cannot change the directory to 'ssd_dir'"
-#	ERR_LOG
-#	exit 1
-#fi
-#
-#ssd_file="${ssd_dir}/sum_res/sum_res_`date '+%Y%m%d'`.txt"
-#
-#if [ ! -d ${ssd_dir%/*} ]
-#then
-#	mkdir ${ssd_dir%/*}
-#fi
-#
 
