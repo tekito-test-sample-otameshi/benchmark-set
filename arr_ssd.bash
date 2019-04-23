@@ -111,7 +111,7 @@ ssd_dir="/home/benchmark/fio/results"
 cd $ssd_dir 2>> $log_file
 ret=`echo $?`
 
-ssd_file="${ssd_dir}/sum_res/sum_res_`date '+%Y%m%d'`.txt"
+ssd_file="${ssd_dir}/sum_res/sum_res_`date '+%Y%m%d%H%M'`.txt"
 
 if [ ! -d ${ssd_file%/*} ]
 then
@@ -132,14 +132,14 @@ do
 	echo "$target" | while read line
 	do
 		stdi=`grep "iops" $line `
-		1st=`echo "$stdi" | head -n 1 | awk -F "," '{print $3}' | sed "s/ avg=//g"`
-		2nd=`echo "$stdi" | head -n 2 | tail -n 1 | awk -F "," '{print $3}' | sed "s/ avg=//g"`
-		3rd=`echo "$stdi" | head -n 3 | tail -n 1 | awk -F "," '{print $3}' | sed "s/ avg=//g"`
-		4th=`echo "$stdi" | tail -n 1 | awk -F "," '{print $3}' | sed "s/ avg=//g"`
+		one=`echo "$stdi" | head -n 1 | awk -F "," '{print $3}' | sed "s/ avg=//g"`
+		two=`echo "$stdi" | head -n 2 | tail -n 1 | awk -F "," '{print $3}' | sed "s/ avg=//g"`
+		three=`echo "$stdi" | head -n 3 | tail -n 1 | awk -F "," '{print $3}' | sed "s/ avg=//g"`
+		four=`echo "$stdi" | tail -n 1 | awk -F "," '{print $3}' | sed "s/ avg=//g"`
 		
 		ssd_time=`date '+%Y-%m-%d %H:%M' -r "$line"`
 
-		echo "${ssd_time},${1st},${2nd},${3rd},${4th}" >> $ssd_file
+		echo "${ssd_time},${one},${two},${three},${four}" >> $ssd_file
 	done
 	
 	if [ "$tmpdate" = "$enddate" ]
