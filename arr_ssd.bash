@@ -102,8 +102,8 @@ do
 	END_DAY
 done
 
-echo "Getting the ssd results from ${beg_year_ans}/${beg_mon_ans}/${beg_day_ans}" to \n
-${end_year_ans}/${end_mon_ans}/${end_day_ans} | tee $log_file
+echo -n "Getting the ssd results from ${beg_year_ans}/${beg_mon_ans}/${beg_day_ans} to 
+${end_year_ans}/${end_mon_ans}/${end_day_ans}" | tee $log_file
 
 #ssd
 ssd_dir="/home/benchmark/fio/results"
@@ -113,9 +113,9 @@ ret=`echo $?`
 
 ssd_file="${ssd_dir}/sum_res/sum_res_`date '+%Y%m%d'`.txt"
 
-if [ ! -d ${ssd_dir%/*} ]
+if [ ! -d ${ssd_file%/*} ]
 then
-	mkdir ${ssd_dir%/*}
+	mkdir ${ssd_file%/*}
 fi
 
 echo "date,time,Seq-Read-1m,Seq-Write-1m,Rand-Read-4k-32qd,Rand-Write-4k-32qd" > $ssd_file
@@ -132,10 +132,10 @@ do
 	echo "$target" | while read line
 	do
 		stdi=`grep "iops" $line `
-		1st=`echo "$stdi" | head -n 1`
-		2nd=`echo "$stdi" | head -n 2 | tail -n 1`
-		3rd=`echo "$stdi" | head -n 3 | tail -n 1`
-		4th=`echo "$stdi" | tail -n 1`
+		1st=`echo "$stdi" | head -n 1 | awk -F "," '{print $3}' | sed "s/ avg=//g"`
+		2nd=`echo "$stdi" | head -n 2 | tail -n 1 | awk -F "," '{print $3}' | sed "s/ avg=//g"`
+		3rd=`echo "$stdi" | head -n 3 | tail -n 1 | awk -F "," '{print $3}' | sed "s/ avg=//g"`
+		4th=`echo "$stdi" | tail -n 1 | awk -F "," '{print $3}' | sed "s/ avg=//g"`
 		
 		ssd_time=`date '+%Y-%m-%d %H:%M' -r "$line"`
 
