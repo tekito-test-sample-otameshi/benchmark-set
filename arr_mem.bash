@@ -170,7 +170,7 @@ do
 		MEM_FUN
 		triad_val="$val"
 
-		mem_time=`date '+%Y-%d-%m %H:%M' -r "$line"`
+		mem_time=`date '+%Y-%d-%m,%H:%M' -r "$line"`
 
 		echo "${mem_time},${copy_val},${scale_val},${add_val},${triad_val}" >> $mem_file
 	done
