@@ -137,7 +137,7 @@ do
 		three=`echo "$stdi" | head -n 3 | tail -n 1 | awk -F "," '{print $3}' | sed "s/ avg=//g"`
 		four=`echo "$stdi" | tail -n 1 | awk -F "," '{print $3}' | sed "s/ avg=//g"`
 		
-		ssd_time=`date '+%Y-%m-%d %H:%M' -r "$line"`
+		ssd_time=`date '+%Y-%m-%d,%H:%M' -r "$line"`
 
 		echo "${ssd_time},${one},${two},${three},${four}" >> $ssd_file
 	done
