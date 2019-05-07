@@ -1,0 +1,6 @@
+    transactions:                        12624  (210.39 per sec.)
+    transactions:                        15807  (263.43 per sec.)
+    transactions:                        17824  (296.99 per sec.)
+    transactions:                        20569  (342.75 per sec.)
+    transactions:                        20807  (346.67 per sec.)
+    transactions:                        20800  (345.99 per sec.)
