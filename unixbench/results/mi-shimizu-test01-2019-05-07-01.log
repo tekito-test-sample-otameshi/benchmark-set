@@ -1,0 +1,47 @@
+
+########################################################
+Dhrystone 2 using register variables -- 1 copy
+==> "/home/benchmark/benchmark-set/unixbench/pgms/dhry2reg" 10 2>&1 >> "/home/benchmark/benchmark-set/unixbench/results/mi-shimizu-test01-2019-05-07-01.log"
+
+#### Pass 1
+
+
+# COUNT0: 299366406
+# COUNT1: 1
+# COUNT2: lps
+# elapsed: 10.004635
+# pid: 7405
+# status: 0
+
+#### Pass 2
+
+
+# COUNT0: 301051910
+# COUNT1: 1
+# COUNT2: lps
+# elapsed: 10.004724
+# pid: 7414
+# status: 0
+
+#### Pass 3
+
+
+# COUNT0: 270665929
+# COUNT1: 1
+# COUNT2: lps
+# elapsed: 10.003822
+# pid: 7425
+# status: 0
+
+#### Pass 4
+
+
+# COUNT0: 301385246
+# COUNT1: 1
+# COUNT2: lps
+# elapsed: 10.003488
+# pid: 7452
+# status: 0
+
+#### Pass 5
+
