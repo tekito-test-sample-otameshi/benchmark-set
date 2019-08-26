@@ -1,0 +1,2 @@
+This file was made for creating "results" directory.
+Do not erase this if you manage the scripts with Git-Hub.
