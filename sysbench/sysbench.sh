@@ -14,5 +14,4 @@ elif [ "${2}" = "" ]; then
 else
   THREADS=${2}
 fi
-#sysbench ${LUA} --db-driver=mysql --table-size=${SIZE} --mysql-host=localhost --mysql-password=sbtest --time=60 --db-ps-mode=disable --threads=${THREADS} ${1}
 sysbench ${LUA} --db-driver=mysql --table-size=${SIZE} --mysql-host=localhost --mysql-password=tX3qwKQD --time=60 --db-ps-mode=disable --threads=${THREADS} ${1}
