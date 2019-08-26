@@ -20,3 +20,4 @@ fio ${fio_file} > ${fio_log}
 
 # --- DB section ---
 ${db_dir}/run.sh
+
